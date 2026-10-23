@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Public Domain Library</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 30px;
+        }
+        main {
+            max-width: 800px;
+            margin: auto;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        input, textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            margin: 8px 0;
+        }
+        button {
+            padding: 10px 20px;
+            background: #254b78;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .book {
+            border-bottom: 1px solid #ddd;
+            padding: 12px 0;
+        }
+    </style>
+</head>
+<body>
+<main>
+    <h1>Public Domain Library</h1>
+    <p>Discover and organize public domain books.</p>
+
+    <div class="card">
+        <h2>Add a Book</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="title" placeholder="Book title" required>
+            <input type="text" name="author" placeholder="Author" required>
+            <textarea name="description" placeholder="Description"></textarea>
+            <button type="submit">Add Book</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Search Books</h2>
+        <form method="GET">
+            <input type="text" name="q" value="{{ query }}" placeholder="Search by title or author">
+            <button type="submit">Search</button>
+            <a href="{% url 'book_catalog' %}">Show All</a>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Book Catalog</h2>
+        {% for book in books %}
+            <div class="book">
+                <h3>{{ book.title }}</h3>
+                <p><strong>Author:</strong> {{ book.author }}</p>
+                <p>{{ book.description }}</p>
+            </div>
+        {% empty %}
+            <p>No books found.</p>
+        {% endfor %}
+    </div>
+</main>
+</body>
+</html>
