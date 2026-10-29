@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}{{ item.title }} — Universal Library{% endblock %}
+{% block content %}
+
+<p class="back-link"><a href="{% url 'home' %}">← Back to the library</a></p>
+
+<article class="detail">
+  <div class="detail-poster">
+    {% if item.cover_url %}
+    <img src="{{ item.cover_url }}" alt="Cover of {{ item.title }}">
+    {% else %}
+    <span class="poster-fallback poster-fallback-large"><span>{{ item.title }}</span></span>
+    {% endif %}
+  </div>
+
+  <div class="detail-main">
+    <p class="detail-badges">
+      <span class="pill">{{ item.get_media_type_display }}</span>
+      {% if item.pd_verified %}<span class="pd-badge">Verified public domain</span>{% endif %}
+    </p>
+    <h1 class="detail-title">{{ item.title }}</h1>
+    <p class="detail-meta">{{ item.creator }}{% if item.year %} · {{ item.year }}{% endif %}</p>
+    {% if item.description %}<p class="detail-description">{{ item.description }}</p>{% endif %}
+
+    <section class="download-panel">
+      <h2>Download this {{ item.get_media_type_display|lower }}</h2>
+      <p class="download-how">Delivered peer to peer with BitTorrent. The file goes straight to your own device, nothing is hosted on this site.</p>
+      {% if item.magnet_link %}
+      <a class="button-primary" href="{{ item.magnet_link }}">Download via Torrent</a>
+      {% endif %}
+      <p class="download-alt">
+        {% if item.torrent_url %}Prefer a .torrent file? <a href="{{ item.torrent_url }}">Download the .torrent</a> instead.{% endif %}
+        You will need a torrent app, such as qBittorrent, to open it.
+      </p>
+      <div class="vpn-note">
+        <strong>One thing first:</strong> in a torrent swarm, other people sharing the file can see your IP address. If that matters to you, switch on a VPN before you start the download.
+      </div>
+    </section>
+
+    <dl class="fact-list">
+      {% if item.pd_note %}
+      <div><dt>Why it is public domain</dt><dd>{{ item.pd_note }}</dd></div>
+      {% endif %}
+      {% if item.source_name %}
+      <div><dt>Source</dt><dd>{% if item.source_url %}<a href="{{ item.source_url }}" rel="noopener">{{ item.source_name }}</a>{% else %}{{ item.source_name }}{% endif %}</dd></div>
+      {% endif %}
+    </dl>
+  </div>
+</article>
+
+{% if related %}
+<section class="related">
+  <h2>More {{ item.get_media_type_display|lower }}s</h2>
+  <div class="grid grid-small">
+    {% for rel in related %}
+    <a class="card" href="{% url 'media_detail' rel.pk %}">
+      <span class="poster">
+        {% if rel.cover_url %}
+        <img src="{{ rel.cover_url }}" alt="Cover of {{ rel.title }}" loading="lazy">
+        {% else %}
+        <span class="poster-fallback"><span>{{ rel.title }}</span></span>
+        {% endif %}
+      </span>
+      <span class="card-body">
+        <span class="card-title">{{ rel.title }}</span>
+        <span class="card-meta">{{ rel.creator }}{% if rel.year %} · {{ rel.year }}{% endif %}</span>
+      </span>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}

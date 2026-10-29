@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Universal Library{% endblock %}</title>
+<meta name="description" content="A free library of public domain movies, books, music and more. Everything here belongs to everyone.">
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/site.css' %}">
+</head>
+<body>
+<div class="ambient" aria-hidden="true"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="wordmark" href="{% url 'home' %}">
+      <span class="wordmark-name">Universal Library</span>
+      <span class="wordmark-tag">Public domain, for everyone</span>
+    </a>
+    <nav class="site-nav">
+      <a href="{% url 'home' %}">Library</a>
+      <a href="{% url 'home' %}?type=movie">Movies</a>
+      <a href="{% url 'home' %}?type=book">Books</a>
+      <a href="{% url 'home' %}?type=audiobook">Audiobooks</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page">
+{% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <p>Every work in this library is in the public domain. Files are shared peer to peer with BitTorrent and are never hosted on this site.</p>
+  <p class="footer-small">Universal Library is a free, non-profit project. If you enjoy it, consider seeding what you download so others can find it too.</p>
+</footer>
+
+</body>
+</html>

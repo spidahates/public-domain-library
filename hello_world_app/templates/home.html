@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Universal Library — Public Domain Movies, Books &amp; More{% endblock %}
+{% block content %}
+
+<section class="hero">
+  <h1>A library that belongs<br>to everyone.</h1>
+  <p class="hero-sub">{{ total_count }} public domain works, free to download and keep forever. No accounts, no fees, no ads.</p>
+  <form class="search-bar" method="get" action="{% url 'home' %}" role="search">
+    {% if active_type %}<input type="hidden" name="type" value="{{ active_type }}">{% endif %}
+    <input type="search" name="q" value="{{ query }}" placeholder="Search titles and creators…" aria-label="Search the library">
+    <button type="submit">Search</button>
+  </form>
+  <div class="filter-row" aria-label="Filter by type">
+    <a class="chip{% if not active_type %} chip-active{% endif %}" href="{% url 'home' %}{% if query %}?q={{ query }}{% endif %}">All</a>
+    {% for value, label in media_types %}
+      <a class="chip{% if active_type == value %} chip-active{% endif %}" href="{% url 'home' %}?type={{ value }}{% if query %}&amp;q={{ query }}{% endif %}">{{ label }}s</a>
+    {% endfor %}
+  </div>
+</section>
+
+{% if items %}
+<section class="grid" aria-label="Library items">
+  {% for item in items %}
+  <a class="card" href="{% url 'media_detail' item.pk %}">
+    <span class="poster">
+      {% if item.cover_url %}
+      <img src="{{ item.cover_url }}" alt="Cover of {{ item.title }}" loading="lazy">
+      {% else %}
+      <span class="poster-fallback"><span>{{ item.title }}</span></span>
+      {% endif %}
+    </span>
+    <span class="card-body">
+      <span class="card-title">{{ item.title }}</span>
+      <span class="card-meta">{{ item.creator }}{% if item.year %} · {{ item.year }}{% endif %}</span>
+      <span class="card-badges">
+        <span class="pill">{{ item.get_media_type_display }}</span>
+        {% if item.pd_verified %}<span class="pd-badge">Public domain</span>{% endif %}
+      </span>
+    </span>
+  </a>
+  {% endfor %}
+</section>
+{% else %}
+<section class="empty">
+  <p>Nothing matches that search yet. Try a different title, or browse the full library.</p>
+  <a class="button-secondary" href="{% url 'home' %}">View everything</a>
+</section>
+{% endif %}
+
+{% endblock %}
